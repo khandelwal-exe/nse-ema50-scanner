@@ -1,22 +1,27 @@
 name: NSE EMA50 Scanner
 
 on:
+  workflow_dispatch:
   schedule:
-    - cron: '30 9 * * 1-5'  # Runs daily at 9:30 AM IST Monday-Friday
-  workflow_dispatch:        # Allows manual run
+    - cron: '30 9 * * 1-5'  # Runs daily at 9:30 AM IST
 
 jobs:
-  scan:
+  run-scanner:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.11
+          python-version: '3.11'
+
       - name: Install Dependencies
         run: |
-          pip install pandas requests schedule
+          pip install pandas requests schedule yfinance
+
       - name: Run Scanner
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
